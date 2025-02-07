@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const loggedInUser = JSON.parse(localStorage.getItem('currentUser')) || JSON.parse(sessionStorage.getItem('currentUser'));
 
   if (loggedInUser) {
-    window.location.href = '../../index.html'; 
+    window.location.href = '../Home/'; 
   }
 });
 
@@ -26,7 +26,7 @@ loginForm.addEventListener('submit', function(event){
     } else [
       sessionStorage.setItem('currentUser', JSON.stringify(user))
     ]
-    window.location.href = '../../index.html'
+    window.location.href = '../Home/'
   } else {
     divError.innerHTML= '<p>Invalid email or password.<br> Please try again or sign up</p>'
   }

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const loggedInUser = JSON.parse(localStorage.getItem('currentUser')) || JSON.parse(sessionStorage.getItem('currentUser'));
 
   if (loggedInUser) {
-    window.location.href = '../../index.html'; 
+    window.location.href = '../Home/'; 
   }
 });
 
