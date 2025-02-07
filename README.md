@@ -2,7 +2,6 @@
 
 # 🚀 RentEase - Compare Flats, Find Your Home 🏠
 
-Check out the live demo: [renansouz.github.io/rentEase](https://renansouz.github.io/rentEase/om)
 
 Welcome to **RentEase** – a client-side web application built as a college assignment to empower renters. Compare flats easily with an interactive, responsive design that manages all data using localStorage.
 
