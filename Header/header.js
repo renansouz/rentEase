@@ -9,7 +9,7 @@ function header() {
         <p id="welcomeMessage"></p>
       </div>
       <nav> 
-        <a href="../Home/">Home</a>
+        <a href="../index.html">Home</a>
         <a href="../AllFlats/">All Flats</a>
         <img class="logo" src="../../img/logo.png" alt="logo" width="150px" >
         <a href="../NewFlat/">New Flat</a>
