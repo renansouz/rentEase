@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Flats - RentEase</title>
+  <link rel="stylesheet" href="../../Header/header.css">
+  <link rel="shortcut icon" href="../../img/logo.png" type="image/x-icon">
+</head>
+<style>
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 20px;
+  background-color: var(--surface);  
+  margin: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filters select,
+.filters input {
+  padding: 5px;
+  border-radius: 3px;
+  background-color: var(--background);
+  color: var(--color-text);
+}
+
+.filters select:focus,
+.filters input:focus {
+  outline: none;
+  border-color: var(--main-color);
+}
+
+.flats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.flat-card {
+  background-color: var(--surface);
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.flat-card:hover {
+  transform: translateY(-5px);
+}
+
+.flat-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.flat-details {
+  padding: 15px;
+}
+
+.flat-details h3 {
+  margin: 0 0 10px;
+  color: black;
+}
+
+.flat-details p {
+  margin: 5px 0;
+}
+
+.contact-btn, .favorite-btn {
+  flex: 1;
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: white;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+
+}
+
+.contact-btn {
+  background-color: var(--main-color);
+  color: var(--surface);
+}
+
+.favorite-btn {
+  background-color: var(--text-secondary);
+}
+.favorite-btn.favorite {
+  background-color: var(--success);
+}
+#applyFilters, #clearFilters {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+#applyFilters {
+  background-color: var(--main-color);
+  color: white;
+}
+
+#applyFilters:hover {
+  background-color: var(--main-hover);
+  transform: translateY(-1px);
+}
+
+#clearFilters {
+  background-color: var(--text-secondary);
+  color: white;
+}
+
+#clearFilters:hover {
+  background-color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.filters select, 
+.filters input {
+  flex: 1 1 150px; 
+  min-width: 120px;
+}
+</style>
+<body>
+  <div id="headerDiv"></div>
+
+  <main>
+    <section class="filters">
+      <select id="city-filter">
+        <option value="">Select City</option>
+      </select>
+      <input type="number" id="min-price" placeholder="Min Price">
+      <input type="number" id="max-price" placeholder="Max Price">
+      <input type="number" id="min-area" placeholder="Min Area Size">
+      <input type="number" id="max-area" placeholder="Max Area Size">
+      <select id="sort-by">
+        <option value="">Sort By</option>
+        <option value="city">City</option>
+        <option value="price">Price</option>
+        <option value="area">Area Size</option>
+      </select>
+      <button id="applyFilters">Apply</button>
+      <button id="clearFilters">Clear</button>
+    </section>
+
+    <div class="flats-grid" id="flats-grid">
+    </div>
+  </main>
+</body>
+<script>
+  let allFlats = [];
+
+  async function fetchFlats() {
+    allFlats = JSON.parse(localStorage.getItem("flats")) || [];
+    allFlats.sort((a, b) => b.id - a.id);
+    populateCityFilter(allFlats); 
+    displayFlats(allFlats);
+  }
+
+  function populateCityFilter(flats) {
+    const cityFilter = document.getElementById("city-filter");
+    const citiesSet = new Set();
+    flats.forEach(flat => {
+      if (flat.city) {
+        citiesSet.add(flat.city);
+      }
+    });
+
+    const cities = Array.from(citiesSet).sort((a, b) => a.localeCompare(b));
+    
+    cityFilter.innerHTML = '<option value="">Select City</option>';
+    cities.forEach(city => {
+      const option = document.createElement("option");
+      option.value = city;
+      option.textContent = city;
+      cityFilter.appendChild(option);
+    });
+  }
+
+  function displayFlats(flats) {
+    const flatsGrid = document.getElementById("flats-grid");
+    flatsGrid.innerHTML = "";
+    const fallbackImage = "https://dummyimage.com/300x200/FfF9F4/222222&text=RentEase";
+    
+    flats.forEach((flat) => {
+      const flatCard = document.createElement("div");
+      flatCard.className = "flat-card";
+      const imageUrl = flat.image || fallbackImage;
+      
+      flatCard.innerHTML = `
+        <img src="${imageUrl}" alt="Flat Image" class="flat-image">
+        <div class="flat-details">
+          <h3>${flat.city}, ${flat.streetName}</h3>
+          <p><strong>Street Number:</strong> ${flat.streetNumber}</p>
+          <p><strong>Area Size:</strong> ${flat.areaSize} sqft</p>
+          <p><strong>Has AC:</strong> ${flat.hasAC ? "Yes" : "No"}</p>
+          <p><strong>Year Built:</strong> ${flat.yearBuilt}</p>
+          <p><strong>Rent Price:</strong> $${flat.rentPrice}</p>
+          <p><strong>Date Available:</strong> ${flat.dateAvailable}</p>
+          <div class="buttons-container">
+            <button class="contact-btn" data-id="${flat.id}">Contact Now</button>
+            <button class="favorite-btn ${flat.isFavorite ? "favorite" : ""}" data-id="${flat.id}">
+              ${flat.isFavorite ? "★" : "☆"}
+            </button>
+          </div>
+        </div>
+      `;
+      flatsGrid.appendChild(flatCard);
+    });
+    
+    attachFavoriteListeners();
+    attachContactListeners();
+  }
+
+  function attachFavoriteListeners() {
+    const favButtons = document.querySelectorAll(".favorite-btn");
+    favButtons.forEach((btn) => {
+      btn.addEventListener("click", function() {
+        const flatId = parseInt(this.getAttribute("data-id"));
+        allFlats = allFlats.map(flat => {
+          if (flat.id === flatId) {
+            flat.isFavorite = !flat.isFavorite;
+          }
+          return flat;
+        });
+        const storedFlats = JSON.parse(localStorage.getItem("flats")) || [];
+        const updatedStoredFlats = storedFlats.map(flat => {
+          if (flat.id === flatId) {
+            flat.isFavorite = !flat.isFavorite;
+          }
+          return flat;
+        });
+        localStorage.setItem("flats", JSON.stringify(updatedStoredFlats));
+        displayFlats(allFlats);
+      });
+    });
+  }
+
+  function attachContactListeners() {
+    const contactButton = document.querySelectorAll(".contact-btn");
+    contactButton.forEach((btn) => {
+      btn.addEventListener("click", function() {
+        const flatId = this.getAttribute("data-id");
+        const flat = allFlats.find(f => f.id == flatId);
+        if (flat && flat.landlordEmail) {
+          const subject = encodeURIComponent("Interested about your flat on RentEase");
+          const body = encodeURIComponent(`Hello, I am interested in the flat located at ${flat.streetName}, ${flat.city}. Could you please provide more details?\n Thank you :)`);
+          window.location.href = `mailto:${flat.landlordEmail}?subject=${subject}&body=${body}`;
+        } else {
+          alert("Landlord email is not available for this flat.");
+        }
+      });
+    });
+  }
+
+  function applyFilters() {
+    const cityFilter = document.getElementById("city-filter").value;
+    const minPrice = parseFloat(document.getElementById("min-price").value) || 0;
+    const maxPrice = parseFloat(document.getElementById("max-price").value) || Infinity;
+    const minArea = parseFloat(document.getElementById("min-area").value) || 0;
+    const maxArea = parseFloat(document.getElementById("max-area").value) || Infinity;
+    const sortBy = document.getElementById("sort-by").value;
+
+    let filteredFlats = allFlats.filter(flat => {
+      const matchesCity = cityFilter ? flat.city === cityFilter : true;
+      const matchesPrice = flat.rentPrice >= minPrice && flat.rentPrice <= maxPrice;
+      const matchesArea = flat.areaSize >= minArea && flat.areaSize <= maxArea;
+      return matchesCity && matchesPrice && matchesArea;
+    });
+
+    if (sortBy) {
+      filteredFlats.sort((a, b) => {
+        if (sortBy === "city") {
+          return a.city.localeCompare(b.city);
+        } else if (sortBy === "price") {
+          return a.rentPrice - b.rentPrice;
+        } else if (sortBy === "area") {
+          return a.areaSize - b.areaSize;
+        }
+      });
+    } else {
+      filteredFlats.sort((a,b) => b.id - a.id)
+    }
+    displayFlats(filteredFlats);
+  }
+
+  function clearFilters() {
+    document.getElementById("city-filter").value = "";
+    document.getElementById("min-price").value = "";
+    document.getElementById("max-price").value = "";
+    document.getElementById("min-area").value = "";
+    document.getElementById("max-area").value = "";
+    document.getElementById("sort-by").value = "";
+    displayFlats(allFlats);
+  }
+
+  document.getElementById("applyFilters").addEventListener("click", applyFilters);
+  document.getElementById("clearFilters").addEventListener("click", clearFilters);
+
+  fetchFlats();
+</script>
+<script src="../../Header/header.js"></script>
+</html>

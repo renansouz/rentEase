@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In Page</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="../../img/logo.png" type="image/x-icon">
+</head>
+<body>
+  <div class="container">
+    <form id="loginForm">
+      <div style="display: flex; flex-direction: column; align-items: center;">
+        <img width="150px" src="../../img/logo.png" alt="logo" style="margin-top: .5rem;">
+
+      </div>
+      <p>Don't have an account? <a href="../SignUp/">Sign up</a></p>
+      <div class="inputs">
+          <label>Email address</label>
+        <input type="email" id="loginEmail" placeholder="email@example.com">
+      </div>
+      <div class="inputs">
+        <div style="display: flex; justify-content: space-between;">
+            <label>Password</label>
+          <a href="forgotPassword.html">Forgot password?</a>
+        </div>
+        <input type="password" id="loginPassword" placeholder="Enter your password">
+      </div>
+      <div class="rememberMe">
+          <label>
+            <input type="checkbox" id="rememberMe">
+            Remember me
+          </label>
+      </div>
+      <div id="error"></div>
+      <button>Sign In</button>
+    </form>
+    <img class="representative-img" src="../../img/signInPhoto.jpg" alt="">
+  </div>
+</body>
+<script src="signIn.js"></script>
+</html>
